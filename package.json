@@ -1,5 +1,5 @@
 {
-  "name": "screwdriver-screwdriver-executor-queue-worker",
+  "name": "screwdriver-executor-queue-worker",
   "version": "0.0.1",
   "description": "Create executor queue worker(s)",
   "main": "index.js",
@@ -10,9 +10,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:screwdriver-cd/screwdriver-executor-queue-worker.git"
+    "url": "git@github.com:screwdriver-cd/executor-queue-worker.git"
   },
-  "homepage": "https://github.com/screwdriver-cd/screwdriver-executor-queue-worker",
+  "homepage": "https://github.com/screwdriver-cd/executor-queue-worker",
   "bugs": "https://github.com/screwdriver-cd/screwdriver/issues",
   "keywords": [
     "screwdriver",
