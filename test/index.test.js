@@ -59,7 +59,7 @@ describe('index test', () => {
             multiWorker
         };
         winstonMock = {
-            log: sinon.stub(),
+            info: sinon.stub(),
             error: sinon.stub()
         };
         executorMockClass = sinon.stub().returns(executorMock);
@@ -147,27 +147,27 @@ describe('index test', () => {
 
     it('log the correct message', () => {
         testWorker.emit('start', workerId);
-        assert.calledWith(winstonMock.log, `worker[${workerId}] started`);
+        assert.calledWith(winstonMock.info, `worker[${workerId}] started`);
 
         testWorker.emit('end', workerId);
-        assert.calledWith(winstonMock.log, `worker[${workerId}] ended`);
+        assert.calledWith(winstonMock.info, `worker[${workerId}] ended`);
 
         testWorker.emit('cleaning_worker', workerId, worker, pid);
-        assert.calledWith(winstonMock.log, `cleaning old worker ${worker} pid ${pid}`);
+        assert.calledWith(winstonMock.info, `cleaning old worker ${worker} pid ${pid}`);
 
         testWorker.emit('poll', workerId, queue);
-        assert.calledWith(winstonMock.log, `worker[${workerId}] polling ${queue}`);
+        assert.calledWith(winstonMock.info, `worker[${workerId}] polling ${queue}`);
 
         testWorker.emit('job', workerId, queue, job);
-        assert.calledWith(winstonMock.log,
+        assert.calledWith(winstonMock.info,
             `worker[${workerId}] working job ${queue} ${JSON.stringify(job)}}`);
 
         testWorker.emit('reEnqueue', workerId, queue, job, plugin);
-        assert.calledWith(winstonMock.log,
+        assert.calledWith(winstonMock.info,
             `worker[${workerId}] reEnqueue job (${plugin}) ${queue} ${JSON.stringify(job)}`);
 
         testWorker.emit('success', workerId, queue, job, result);
-        assert.calledWith(winstonMock.log,
+        assert.calledWith(winstonMock.info,
             `worker[${workerId}] ${job} success ${queue} ${JSON.stringify(job)} >> ${result}`);
 
         // Mock updateBuildStatus to assert params pass in for the function
@@ -180,13 +180,13 @@ describe('index test', () => {
             `worker[${workerId}] error ${queue} ${JSON.stringify(job)} >> ${error}`);
 
         testWorker.emit('pause', workerId);
-        assert.calledWith(winstonMock.log, `worker[${workerId}] paused`);
+        assert.calledWith(winstonMock.info, `worker[${workerId}] paused`);
 
         testWorker.emit('internalError', error);
         assert.calledWith(winstonMock.error, error);
 
         testWorker.emit('multiWorkerAction', verb, delay);
-        assert.calledWith(winstonMock.log,
+        assert.calledWith(winstonMock.info,
             `*** checked for worker status: ${verb} (event loop delay: ${delay}ms)`);
     });
 });

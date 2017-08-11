@@ -91,7 +91,7 @@ function updateBuildStatus(updateConfig, callback) {
 
 const supportFunction = { updateBuildStatus };
 
-// eslint-disable-next-line new-cap
+/* eslint-disable new-cap, max-len */
 const multiWorker = new NR.multiWorker({
     connection: connectionDetails,
     queues: ['builds'],
@@ -103,33 +103,34 @@ const multiWorker = new NR.multiWorker({
 }, jobs);
 
 multiWorker.on('start', workerId =>
-    winston.log(`worker[${workerId}] started`));
+    winston.info(`worker[${workerId}] started`));
 multiWorker.on('end', workerId =>
-    winston.log(`worker[${workerId}] ended`));
+    winston.info(`worker[${workerId}] ended`));
 multiWorker.on('cleaning_worker', (workerId, worker, pid) =>
-    winston.log(`cleaning old worker ${worker} pid ${pid}`));
+    winston.info(`cleaning old worker ${worker} pid ${pid}`));
 multiWorker.on('poll', (workerId, queue) =>
-    winston.log(`worker[${workerId}] polling ${queue}`));
+    winston.info(`worker[${workerId}] polling ${queue}`));
 multiWorker.on('job', (workerId, queue, job) =>
-    winston.log(`worker[${workerId}] working job ${queue} ${JSON.stringify(job)}}`));
+    winston.info(`worker[${workerId}] working job ${queue} ${JSON.stringify(job)}}`));
 multiWorker.on('reEnqueue', (workerId, queue, job, plugin) =>
-    winston.log(`worker[${workerId}] reEnqueue job (${plugin}) ${queue} ${JSON.stringify(job)}`));
+    winston.info(`worker[${workerId}] reEnqueue job (${plugin}) ${queue} ${JSON.stringify(job)}`));
 multiWorker.on('success', (workerId, queue, job, result) =>
-    winston.log(`worker[${workerId}] ${job} success ${queue} ${JSON.stringify(job)} >> ${result}`));
+    winston.info(`worker[${workerId}] ${job} success ${queue} ${JSON.stringify(job)} >> ${result}`));
 multiWorker.on('failure', (workerId, queue, job, failure) =>
     supportFunction.updateBuildStatus({ workerId, queue, job, failure }, () => {}));
 multiWorker.on('error', (workerId, queue, job, error) =>
     winston.error(`worker[${workerId}] error ${queue} ${JSON.stringify(job)} >> ${error}`));
 multiWorker.on('pause', workerId =>
-    winston.log(`worker[${workerId}] paused`));
+    winston.info(`worker[${workerId}] paused`));
 
 // multiWorker emitters
 multiWorker.on('internalError', error =>
     winston.error(error));
 multiWorker.on('multiWorkerAction', (verb, delay) =>
-    winston.log(`*** checked for worker status: ${verb} (event loop delay: ${delay}ms)`));
+    winston.info(`*** checked for worker status: ${verb} (event loop delay: ${delay}ms)`));
 
 multiWorker.start();
+/* eslint-enable new-cap, max-len */
 
 process.on('SIGTERM', () => {
     multiWorker.end();
