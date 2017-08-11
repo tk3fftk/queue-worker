@@ -28,9 +28,9 @@ const executor = new ExecutorRouter({
 
 const connectionDetails = {
     pkg: 'ioredis',
-    host: redisConfig.REDIS_HOST,
-    password: redisConfig.REDIS_PASSWORD,
-    port: redisConfig.REDIS_PORT,
+    host: redisConfig.host,
+    password: redisConfig.password,
+    port: redisConfig.port,
     database: 0
 };
 
