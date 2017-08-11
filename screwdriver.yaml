@@ -38,9 +38,9 @@ jobs:
             - deploy-k8s: K8S_TAG=`cat VERSION` ./ci/k8s-deploy.sh
             - test: echo Put acceptance tests here
         environment:
-            DOCKER_REPO: screwdrivercd/executor-queue-worker
-            K8S_CONTAINER: screwdrivercd/executor-queue-worker
-            K8S_IMAGE: screwdrivercd/executor-queue-worker
+            DOCKER_REPO: screwdrivercd/queue-worker
+            K8S_CONTAINER: screwdrivercd/queue-worker
+            K8S_IMAGE: screwdrivercd/queue-worker
             K8S_HOST: api.k8s.screwdriver.cd
             K8S_DEPLOYMENT: queue-worker
         secrets:
