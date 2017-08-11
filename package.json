@@ -11,9 +11,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:screwdriver-cd/executor-queue-worker.git"
+    "url": "git@github.com:screwdriver-cd/queue-worker.git"
   },
-  "homepage": "https://github.com/screwdriver-cd/executor-queue-worker",
+  "homepage": "https://github.com/screwdriver-cd/queue-worker",
   "bugs": "https://github.com/screwdriver-cd/screwdriver/issues",
   "keywords": [
     "screwdriver",
