@@ -1,30 +1,12 @@
 'use strict';
 
-const asCallback = require('ascallback');
 const config = require('config');
+const jobs = require('./lib/jobs');
 const NR = require('node-resque');
 const request = require('request');
 const winston = require('winston');
 
-const ecosystem = config.get('ecosystem');
-const executorConfig = config.get('executor');
 const redisConfig = config.get('redis');
-
-const ExecutorRouter = require('screwdriver-executor-router');
-const executorPlugins = Object.keys(executorConfig).reduce((aggregator, keyName) => {
-    if (keyName !== 'plugin') {
-        aggregator.push(Object.assign({
-            name: keyName
-        }, executorConfig[keyName]));
-    }
-
-    return aggregator;
-}, []);
-const executor = new ExecutorRouter({
-    defaultPlugin: executorConfig.plugin,
-    executor: executorPlugins,
-    ecosystem
-});
 
 const connectionDetails = {
     pkg: 'ioredis',
@@ -32,23 +14,6 @@ const connectionDetails = {
     password: redisConfig.password,
     port: redisConfig.port,
     database: 0
-};
-
-const jobs = {
-    start: {
-        /**
-         * Call executor.start with the buildConfig
-         * @method perform
-         * @param {Object}  buildConfig               Configuration
-         * @param {Object}  [buildConfig.annotations] Optional key/value object
-         * @param {String}  buildConfig.apiUri        Screwdriver's API
-         * @param {String}  buildConfig.buildId       Unique ID for a build
-         * @param {String}  buildConfig.container     Container for the build to run in
-         * @param {String}  buildConfig.token         JWT to act on behalf of the build
-         */
-        perform: (buildConfig, callback) =>
-            asCallback(executor.start(buildConfig), callback)
-    }
 };
 
 /**
