@@ -20,7 +20,8 @@ describe('Jobs Unit Test', () => {
 
     beforeEach(() => {
         mockExecutor = {
-            start: sinon.stub()
+            start: sinon.stub(),
+            stop: sinon.stub()
         };
 
         mockExecutorRouter = function () { return mockExecutor; };
@@ -62,6 +63,35 @@ describe('Jobs Unit Test', () => {
             mockExecutor.start.rejects(expectedError);
 
             jobs.start({}, (err) => {
+                assert.deepEqual(err, expectedError);
+
+                done();
+            });
+        });
+    });
+
+    describe('stop', () => {
+        it('stops a job', (done) => {
+            const expectedConfig = { buildConfig: 'buildConfig' };
+
+            mockExecutor.stop.resolves(null);
+
+            jobs.stop(expectedConfig, (err, result) => {
+                assert.isNull(err);
+                assert.isNull(result);
+
+                assert.calledWith(mockExecutor.stop, expectedConfig);
+
+                done();
+            });
+        });
+
+        it('returns an error from stopping executor', (done) => {
+            const expectedError = new Error('executor.stop Error');
+
+            mockExecutor.stop.rejects(expectedError);
+
+            jobs.stop({}, (err) => {
                 assert.deepEqual(err, expectedError);
 
                 done();
