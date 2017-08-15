@@ -29,15 +29,13 @@ describe('index test', () => {
         uri: `${job.args[0].apiUri}/v4/builds/${job.args[0].buildId}`
     };
 
-    let executorMockClass;
-    let executorMock;
+    let mockJobs;
     let multiWorker;
     let nrMockClass;
+    let spyMultiWorker;
     let winstonMock;
     let requestMock;
-    let config;
     let index;
-    let jobs;
     let testWorker;
     let supportFunction;
     let updateBuildStatusMock;
@@ -50,23 +48,25 @@ describe('index test', () => {
     });
 
     beforeEach(() => {
-        executorMock = {
+        mockJobs = {
             start: sinon.stub()
         };
-        multiWorker = class { start() {} };
+        multiWorker = function () {
+            this.start = () => {};
+        };
         util.inherits(multiWorker, EventEmitter);
         nrMockClass = {
             multiWorker
         };
+        spyMultiWorker = sinon.spy(nrMockClass, 'multiWorker');
         winstonMock = {
             info: sinon.stub(),
             error: sinon.stub()
         };
-        executorMockClass = sinon.stub().returns(executorMock);
         requestMock = sinon.stub();
         updateBuildStatusMock = sinon.stub();
 
-        mockery.registerMock('screwdriver-executor-router', executorMockClass);
+        mockery.registerMock('./lib/jobs', mockJobs);
         mockery.registerMock('node-resque', nrMockClass);
         mockery.registerMock('winston', winstonMock);
         mockery.registerMock('request', requestMock);
@@ -74,18 +74,7 @@ describe('index test', () => {
         // eslint-disable-next-line global-require
         index = require('../index.js');
         supportFunction = index.supportFunction;
-        jobs = index.jobs;
         testWorker = index.multiWorker;
-
-        config = {
-            buildId: 8609,
-            container: 'node:6',
-            apiUri: 'http://api.com',
-            token: 'asdf',
-            annotations: {
-                'beta.screwdriver.cd/executor': 'k8s'
-            }
-        };
     });
 
     afterEach(() => {
@@ -95,23 +84,6 @@ describe('index test', () => {
 
     after(() => {
         mockery.disable();
-    });
-
-    it('callback with null if start successfully', () => {
-        executorMock.start.resolves(null);
-
-        jobs.start.perform(config, (err) => {
-            assert.calledWith(executorMock.start, config);
-            assert.isNull(err);
-        });
-    });
-
-    it('callback with error if executor fails to start', () => {
-        executorMock.start.rejects(new Error('fails to start'));
-
-        jobs.start.perform(config, (err) => {
-            assert.strictEqual(err.message, 'fails to start');
-        });
     });
 
     it('log correct message when successfully update build failure status', (done) => {
@@ -188,5 +160,29 @@ describe('index test', () => {
         testWorker.emit('multiWorkerAction', verb, delay);
         assert.calledWith(winstonMock.info,
             `*** checked for worker status: ${verb} (event loop delay: ${delay}ms)`);
+    });
+
+    describe('multiWorker', () => {
+        it('is constructed correctly', () => {
+            const expectedConfig = {
+                connection: sinon.match({
+                    pkg: 'ioredis',
+                    host: '127.0.0.1',
+                    port: 6379,
+                    database: 0,
+                    password: undefined
+                }),
+                queues: ['builds'],
+                minTaskProcessors: 1,
+                maxTaskProcessors: 10,
+                checkTimeout: 1000,
+                maxEventLoopDelay: 10,
+                toDisconnectProcessors: true
+            };
+
+            assert.calledWith(spyMultiWorker, sinon.match(expectedConfig), sinon.match({
+                start: mockJobs.start
+            }));
+        });
     });
 });

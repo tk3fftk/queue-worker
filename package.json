@@ -43,7 +43,6 @@
     "sinon": "^3.1.0"
   },
   "dependencies": {
-    "ascallback": "^1.1.1",
     "config": "^1.26.1",
     "node-resque": "^4.0.7",
     "request": "^2.81.0",
