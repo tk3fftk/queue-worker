@@ -44,3 +44,5 @@ redis:
     password: REDIS_PASSWORD
     # Host of redis cluster
     port: REDIS_PORT
+    # Prefix for the queue name
+    prefix: EXECUTOR_PREFIX

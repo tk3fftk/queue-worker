@@ -37,3 +37,6 @@ redis:
     # password: null
     # Host of redis cluster
     port: 6379
+    # Prefix for the queue name
+    # prefix: 'beta-'
+
