@@ -15,6 +15,7 @@ const connectionDetails = {
     port: redisConfig.port,
     database: 0
 };
+const queuePrefix = redisConfig.prefix || '';
 
 /**
  * Update build status to FAILURE
@@ -59,7 +60,7 @@ const supportFunction = { updateBuildStatus };
 /* eslint-disable new-cap, max-len */
 const multiWorker = new NR.multiWorker({
     connection: connectionDetails,
-    queues: ['builds'],
+    queues: [`${queuePrefix}builds`],
     minTaskProcessors: 1,
     maxTaskProcessors: 10,
     checkTimeout: 1000,
