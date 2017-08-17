@@ -1,5 +1,6 @@
 workflow:
     - publish
+    - beta
     - prod
 
 shared:
@@ -29,6 +30,24 @@ jobs:
             # Trigger a Docker Hub build
             - DOCKER_TRIGGER
 
+    # Deploy to beta environment
+    beta:
+        steps:
+            - setup-ci: git clone https://gist.github.com/3d2388b2a7ba658cdcdaffa8cd874e50.git ci
+            - get-tag: ./ci/git-latest.sh
+            - wait-docker: DOCKER_TAG=`cat VERSION` ./ci/docker-wait.sh
+            - deploy-k8s: K8S_TAG=`cat VERSION` ./ci/k8s-deploy.sh
+            - test: echo Put acceptance tests here
+        environment:
+            DOCKER_REPO: screwdrivercd/queue-worker
+            K8S_CONTAINER: screwdriver-redis-worker
+            K8S_IMAGE: screwdrivercd/queue-worker
+            K8S_HOST: api.k8s.screwdriver.cd
+            K8S_DEPLOYMENT: redis-worker-beta
+        secrets:
+            # Talking to Kubernetes
+            - K8S_TOKEN
+
     # Deploy to our prod environment and run tests
     prod:
         steps:
@@ -39,10 +58,10 @@ jobs:
             - test: echo Put acceptance tests here
         environment:
             DOCKER_REPO: screwdrivercd/queue-worker
-            K8S_CONTAINER: screwdrivercd/queue-worker
+            K8S_CONTAINER: screwdriver-redis-worker
             K8S_IMAGE: screwdrivercd/queue-worker
             K8S_HOST: api.k8s.screwdriver.cd
-            K8S_DEPLOYMENT: queue-worker
+            K8S_DEPLOYMENT: redis-worker
         secrets:
             # Talking to Kubernetes
             - K8S_TOKEN
