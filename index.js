@@ -55,7 +55,23 @@ function updateBuildStatus(updateConfig, callback) {
     });
 }
 
-const supportFunction = { updateBuildStatus };
+/**
+ * Shutdown workers and then exit the process
+ * @method shutDownWorker
+ * @param  {Object}       worker    worker to be ended
+ */
+function shutDownWorker(worker) {
+    worker.end((err) => {
+        if (err) {
+            winston.error(`failed to end the worker: ${err}`);
+            process.exit(128);
+        }
+
+        process.exit(0);
+    });
+}
+
+const supportFunction = { updateBuildStatus, shutDownWorker };
 
 /* eslint-disable new-cap, max-len */
 const multiWorker = new NR.multiWorker({
@@ -77,7 +93,7 @@ multiWorker.on('cleaning_worker', (workerId, worker, pid) =>
 multiWorker.on('poll', (workerId, queue) =>
     winston.info(`worker[${workerId}] polling ${queue}`));
 multiWorker.on('job', (workerId, queue, job) =>
-    winston.info(`worker[${workerId}] working job ${queue} ${JSON.stringify(job)}}`));
+    winston.info(`worker[${workerId}] working job ${queue} ${JSON.stringify(job)}`));
 multiWorker.on('reEnqueue', (workerId, queue, job, plugin) =>
     winston.info(`worker[${workerId}] reEnqueue job (${plugin}) ${queue} ${JSON.stringify(job)}`));
 multiWorker.on('success', (workerId, queue, job, result) =>
@@ -96,12 +112,9 @@ multiWorker.on('multiWorkerAction', (verb, delay) =>
     winston.info(`*** checked for worker status: ${verb} (event loop delay: ${delay}ms)`));
 
 multiWorker.start();
-/* eslint-enable new-cap, max-len */
 
-process.on('SIGTERM', () => {
-    multiWorker.end();
-    process.exit();
-});
+// Shut down workers before exit the process
+process.on('SIGTERM', () => supportFunction.shutDownWorker(multiWorker));
 
 module.exports = {
     jobs,
