@@ -8,7 +8,7 @@ const util = require('util');
 
 sinon.assert.expose(assert, { prefix: '' });
 
-describe('index test', () => {
+describe('Index Test', () => {
     const worker = 'abc';
     const pid = '111';
     const plugin = {};
@@ -198,7 +198,9 @@ describe('index test', () => {
                     host: '127.0.0.1',
                     port: 6379,
                     database: 0,
-                    password: undefined
+                    options: {
+                        password: undefined
+                    }
                 }),
                 queues: ['builds'],
                 minTaskProcessors: 1,

@@ -11,7 +11,9 @@ const redisConfig = config.get('redis');
 const connectionDetails = {
     pkg: 'ioredis',
     host: redisConfig.host,
-    password: redisConfig.password,
+    options: {
+        password: redisConfig.password
+    },
     port: redisConfig.port,
     database: 0
 };
