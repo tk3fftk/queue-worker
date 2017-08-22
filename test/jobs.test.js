@@ -63,8 +63,8 @@ describe('Jobs Unit Test', () => {
     });
 
     describe('start', () => {
-        it('starts a job', (done) => {
-            const expectedConfig = {
+        it('starts a job', () => {
+            const expectedConfig = JSON.stringify({
                 annotations: {
                     'beta.screwdriver.cd/executor': 'k8s'
                 },
@@ -72,106 +72,92 @@ describe('Jobs Unit Test', () => {
                 container: 'node:4',
                 apiUri: 'http://api.com',
                 token: 'asdf'
-            };
+            });
 
             mockExecutor.start.resolves(null);
             mockRedisObj.hget.resolves(expectedConfig);
             mockRedisObj.hdel.resolves(1);
 
-            jobs.start({ buildId: expectedConfig.buildId }, (err, result) => {
+            return jobs.start({ buildId: expectedConfig.buildId }, (err, result) => {
                 assert.isNull(err);
                 assert.isNull(result);
 
-                assert.calledWith(mockExecutor.start, expectedConfig);
+                assert.calledWith(mockExecutor.start, JSON.parse(expectedConfig));
 
                 assert.calledWith(mockRedisObj.hget, 'buildConfigs', expectedConfig.buildId);
                 assert.calledWith(mockRedisObj.hdel, 'buildConfigs', expectedConfig.buildId);
-
-                done();
             });
         });
 
-        it('returns an error from executor', (done) => {
-            mockRedisObj.hget.resolves({});
+        it('returns an error from executor', () => {
+            mockRedisObj.hget.resolves('{}');
             mockRedisObj.hdel.resolves(1);
 
             const expectedError = new Error('executor.start Error');
 
             mockExecutor.start.rejects(expectedError);
 
-            jobs.start({}, (err) => {
+            return jobs.start({}, (err) => {
                 assert.deepEqual(err, expectedError);
-
-                done();
             });
         });
 
-        it('returns an error when redis fails to get a config', (done) => {
+        it('returns an error when redis fails to get a config', () => {
             const expectedError = new Error('hget error');
 
             mockRedisObj.hget.rejects(expectedError);
 
-            jobs.start({}, (err) => {
+            return jobs.start({}, (err) => {
                 assert.deepEqual(err, expectedError);
-
-                done();
             });
         });
 
-        it('returns an error when redis fails to remove a config', (done) => {
+        it('returns an error when redis fails to remove a config', () => {
             const expectedError = new Error('hdel error');
 
-            mockRedisObj.hget.resolves({});
+            mockRedisObj.hget.resolves('{}');
             mockRedisObj.hdel.rejects(expectedError);
 
-            jobs.start({}, (err) => {
+            return jobs.start({}, (err) => {
                 assert.deepEqual(err, expectedError);
-
-                done();
             });
         });
     });
 
     describe('stop', () => {
-        it('stops a job', (done) => {
+        it('stops a job', () => {
             const expectedConfig = { buildConfig: 'buildConfig' };
 
             mockExecutor.stop.resolves(null);
             mockRedisObj.hdel.resolves(1);
 
-            jobs.stop(expectedConfig, (err, result) => {
+            return jobs.stop(expectedConfig, (err, result) => {
                 assert.isNull(err);
                 assert.isNull(result);
 
                 assert.calledWith(mockRedisObj.hdel, 'buildConfigs', expectedConfig.buildId);
                 assert.calledWith(mockExecutor.stop, expectedConfig);
-
-                done();
             });
         });
 
-        it('returns an error from stopping executor', (done) => {
+        it('returns an error from stopping executor', () => {
             const expectedError = new Error('executor.stop Error');
 
             mockRedisObj.hdel.resolves(1);
             mockExecutor.stop.rejects(expectedError);
 
-            jobs.stop({}, (err) => {
+            return jobs.stop({}, (err) => {
                 assert.deepEqual(err, expectedError);
-
-                done();
             });
         });
 
-        it('returns an error when redis fails to remove a config', (done) => {
+        it('returns an error when redis fails to remove a config', () => {
             const expectedError = new Error('hdel error');
 
             mockRedisObj.hdel.rejects(expectedError);
 
-            jobs.stop({}, (err) => {
+            return jobs.stop({}, (err) => {
                 assert.deepEqual(err, expectedError);
-
-                done();
             });
         });
     });
