@@ -25,7 +25,7 @@ npm install screwdriver-executor-queue-worker
 | config.token       | String | JWT to act on behalf of the build |
 
 ##### Expected Outcome
-The start function is expected to create a task in the designated execution engine.
+The start function is expected to create a build in the designated execution engine.
 
 ##### Expected Return
 A callback of `fn(err, result)`, where `err` is an Error that was encountered (if any) and `result`
