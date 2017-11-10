@@ -8,7 +8,7 @@ A Resque Worker implementation that consumes jobs in a Resque queue.
 ## Usage
 
 ```bash
-npm install screwdriver-executor-queue-worker
+npm install screwdriver-queue-worker
 ```
 
 ### Methods
