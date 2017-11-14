@@ -65,6 +65,5 @@ Code licensed under the BSD 3-Clause license. See LICENSE file for terms.
 [issues-url]: https://github.com/screwdriver-cd/executor-queue-worker/issues
 [status-image]: https://cd.screwdriver.cd/pipelines/301/badge
 [status-url]: https://cd.screwdriver.cd/pipelines/301
-[task]: https://github.com/screwdriver-cd/data-schema/blob/master/model/task.js
 [daviddm-image]: https://david-dm.org/screwdriver-cd/executor-queue-worker.svg?theme=shields.io
 [daviddm-url]: https://david-dm.org/screwdriver-cd/executor-queue-worker
