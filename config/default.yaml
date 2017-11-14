@@ -43,7 +43,7 @@ redis:
     host: 127.0.0.1
     # Password to connect to redis cluster
     # password: null
-    # Host of redis cluster
+    # Port of redis cluster
     port: 6379
     # Prefix for the queue name
     # prefix: 'beta-'
