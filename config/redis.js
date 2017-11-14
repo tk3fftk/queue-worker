@@ -7,7 +7,8 @@ const connectionDetails = {
     pkg: 'ioredis',
     host: redisConfig.host,
     options: {
-        password: redisConfig.password
+        password: redisConfig.password,
+        tls: redisConfig.tls
     },
     port: redisConfig.port,
     database: 0

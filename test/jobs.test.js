@@ -55,7 +55,8 @@ describe('Jobs Unit Test', () => {
             const expectedPort = 6379;
             const expectedHost = '127.0.0.1';
             const expectedOptions = {
-                password: undefined
+                password: undefined,
+                tls: false
             };
 
             assert.calledWith(mockRedis, expectedPort, expectedHost, expectedOptions);

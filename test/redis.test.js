@@ -23,7 +23,8 @@ describe('redis config test', () => {
                 host: 'mockhost',
                 port: '1234',
                 password: 'SUPER_SECURE_PASSWORD',
-                prefix: 'mockPrefix_'
+                prefix: 'mockPrefix_',
+                tls: false
             })
         };
 
@@ -39,7 +40,8 @@ describe('redis config test', () => {
                 pkg: 'ioredis',
                 host: 'mockhost',
                 options: {
-                    password: 'SUPER_SECURE_PASSWORD'
+                    password: 'SUPER_SECURE_PASSWORD',
+                    tls: false
                 },
                 port: '1234',
                 database: 0

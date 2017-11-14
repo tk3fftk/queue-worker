@@ -71,7 +71,9 @@ redis:
     host: REDIS_HOST
     # Password to connect to redis cluster
     password: REDIS_PASSWORD
-    # Host of redis cluster
+    # Port of redis cluster
     port: REDIS_PORT
     # Prefix for the queue name
     prefix: REDIS_QUEUE_PREFIX
+    # Flag to enable client for TLS-based communication
+    tls: REDIS_TLS_ENABLED

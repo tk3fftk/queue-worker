@@ -47,4 +47,6 @@ redis:
     port: 6379
     # Prefix for the queue name
     # prefix: 'beta-'
+    # Flag to enable client for TLS-based communication
+    tls: false
 
