@@ -3,7 +3,12 @@ shared:
 
 jobs:
     main:
-        requires: [~pr, ~commit, ~sd@235:publish]
+        # ~sd@235:publish executor-k8s-vm https://cd.screwdriver.cd/pipelines/235/
+        # ~sd@13:pubish screwdriver-executor-docker https://cd.screwdriver.cd/pipelines/13
+        # screwdriver-executor-jenkins ?
+        # ~sd@28:pubish screwdriver-executor-k8s https://cd.screwdriver.cd/pipelines/28
+        # ~sd@202:pubish screwdriver-executor-router https://cd.screwdriver.cd/pipelines/202
+        requires: [~pr, ~commit, ~sd@235:publish, ~sd@13:pubish, ~sd@28:pubish, ~sd@202:pubish]
         steps:
             - install: npm install
             - test: npm test
