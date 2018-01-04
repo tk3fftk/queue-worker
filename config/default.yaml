@@ -7,9 +7,15 @@ executor:
         kubernetes:
             # The host or IP of the kubernetes cluster
             host: kubernetes.default
-            # The jwt token used for authenticating kubernetes requests
-            # Loaded from /var/run/secrets/kubernetes.io/serviceaccount/token by default
-
+            resources:
+                cpu:
+                    # Number of cpu cores
+                    low: 2
+                    high: 6
+                memory:
+                    # Memory in GB
+                    low: 2
+                    high: 12
         # Container tags to use
         launchVersion: stable
     k8s-vm:
@@ -18,9 +24,18 @@ executor:
         kubernetes:
             # The host or IP of the kubernetes cluster
             host: kubernetes.default
-            # The jwt token used for authenticating kubernetes requests
-            # Loaded from /var/run/secrets/kubernetes.io/serviceaccount/token by default
-
+            # Resources for build pod
+            resources:
+                cpu:
+                    # Number of cpu cores
+                    low: 2
+                    high: 6
+                memory:
+                    # Memory in GB
+                    low: 2
+                    high: 12
+            # k8s node selectors for approprate pod scheduling
+            nodeSelectors: {}
         # Launcher container tag to use
         launchVersion: stable
 #     jenkins:
